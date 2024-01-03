@@ -31,7 +31,7 @@ Two environments called `Unicycle` and `SimulatedCars` are provided in this repo
 desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the 4th car to keep
 a desired distance from the 3rd car while avoiding collisions with other cars.
 
-Interested readers can also explore the option of using their own customized environments. Detailed instructions can be found below.
+***Interested readers can also explore the option of using their own customized environments. Detailed instructions can be found below***.
 ### `Unicycle` Env: 
 You can follow the 3 steps below to run the RL-training part directly since a pre-trained model has been provided:
 1. Update the `neural_ode_model_pt` variable in line 130 of `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Unicycle/Unicycle_RL_training/sac_cbf_clf/sac_cbf_clf.py` with the correct path to the provided pre-trained model that aligns with your computing environment
