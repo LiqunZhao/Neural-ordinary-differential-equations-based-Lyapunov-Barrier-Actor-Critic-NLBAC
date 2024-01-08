@@ -76,14 +76,15 @@ Here are the results obtained by my machine:
 
 The whole process is similar: 
 
-1. Prepare you own customized environment and do some adjustments. Here is one point:
+1. Copy the folder `Unicycle` and rename it as your customized environment`Your_customized_environment`
+2. Prepare you own customized environment and do some adjustments. Here is one point:
 - Outputs of your own customized `env.step` function. Besides `next obs`, `reward`, `done` and `info` that are commonly used in RL literature, here we still need:
   - `constraint`: Difference between the current state and the desired state, and is required to decrease. It is also used to approximate the Lyapunov network.
   - Some lists used as inputs of the Lyapunov network (if `obs` and `next obs` are not used as inputs of the Lyapunov network directly). See the aforementioned environments as examples.
   - Other info like the number of safety violations and value of safety cost (usually used in algorithms like CPO, PPO-Lagrangian and TRPO-Lagrangian) 
-2. Add the new customized environment in the file `build_env.py`, and change some if statements regarding `dynamics_mode` in `sac_cbf_clf.py`
-3. Change the replay buffer since the outputs of `env.step` are changed.
-4. Tune the hyperparameters like learning rates, batch size, number of hidden states and so on if necessary.
+3. Add the new customized environment in the file `build_env.py`, and change some if statements regarding `dynamics_mode` in `sac_cbf_clf.py`
+4. Change the replay buffer since the outputs of `env.step` are changed.
+5. Tune the hyperparameters like learning rates, batch size, number of hidden states and so on if necessary.
 6. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_modelling`
 7. Run the file `Your_customized_environment_modelling.py` (You can first change the names of the data collected and pre-trained model, as well as the path where the pre-trained model is saved in the file. Make sure that they align with each other).
 8. Copy the new pre-trained model to `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf`
