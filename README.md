@@ -76,7 +76,7 @@ Here are the results obtained by my machine:
 
 The whole process is similar: 
 
-1. Copy the folder `Unicycle` and rename it as your customized environment`Your_customized_environment`
+1. Copy the folder `Unicycle` and rename it as your customized environment `Your_customized_environment`
 2. Prepare you own customized environment and do some adjustments. Here is one point:
 - Outputs of your own customized `env.step` function. Besides `next obs`, `reward`, `done` and `info` that are commonly used in RL literature, here we still need:
   - `constraint`: Difference between the current state and the desired state, and is required to decrease. It is also used to approximate the Lyapunov network.
