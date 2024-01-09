@@ -86,7 +86,7 @@ The whole process is similar:
 4. Change the replay buffer since the outputs of `env.step` are changed.
 5. Tune the hyperparameters like learning rates, batch size, number of hidden states and so on if necessary.
 6. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_modelling`
-7. Run the file `Your_customized_environment_modelling.py` (You can first change the names of the data collected and pre-trained model, as well as the path where the pre-trained model is saved in the file. Make sure that they align with each other).
+7. Run the file `Your_customized_environment_modelling.py` (You can change the names of the data collected and pre-trained model, the path where the pre-trained model is saved, and some parameters like the input and output dimensions and the amount of data collected for pre-training. Make sure that they align with each other).
 8. Copy the new pre-trained model to `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf`
 9. Update the `neural_ode_model_pt` variable in `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf/sac_cbf_clf.py` with the correct path to the new pre-trained model that aligns with your computing environment
 10. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training`
