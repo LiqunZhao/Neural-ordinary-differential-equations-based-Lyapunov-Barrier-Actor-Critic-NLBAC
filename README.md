@@ -12,6 +12,11 @@ for other algorithms, please refer to:
 
 ***CPO, PPO-Lagrangian and TRPO-Lagrangian***: https://github.com/openai/safety-starter-agents
 
+Two environments called `Unicycle` and `SimulatedCars` are provided in this repository. In `Unicycle`, a unicycle is required to arrive at the
+desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the 4th car to keep
+a desired distance from the 3rd car while avoiding collisions with other cars.
+
+***Interested readers can also explore the option of using their own customized environments. Detailed instructions can be found below***.
 
 ## Installation Requirement
 The experiments are run with Pytorch, and wandb (https://wandb.ai/site) is used to save the data and draw the graphs. 
