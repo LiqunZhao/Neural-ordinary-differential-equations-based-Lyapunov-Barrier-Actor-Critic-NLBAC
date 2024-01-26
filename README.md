@@ -1,7 +1,7 @@
 # Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC
 
 Repository containing the code for the paper ["NLBAC: A Neural ODEs-based Framework for Stable and Safe
-Reinforcement Learning"](https://github.com/LiqunZhao/Comprehensive-Version-of-Paper-NLBAC/blob/main/NLBAC%3A%20A%20Neural%20ODEs-based%20Framework%20for%20Stable%20and%20Safe%20Reinforcement%20Learning.pdf), and this code is developed based on the code: https://github.com/LiqunZhao/A-Barrier-Lyapunov-Actor-Critic-Reinforcement-Learning-Approach-for-Safe-and-Stable-Control and https://github.com/yemam3/SAC-RCBF
+Reinforcement Learning"](https://github.com/LiqunZhao/Comprehensive-Version-of-Paper-NLBAC/blob/main/NLBAC%3A%20A%20Neural%20ODEs-based%20Framework%20for%20Stable%20and%20Safe%20Reinforcement%20Learning.pdf), and this code is developed based on the code: https://github.com/yemam3/SAC-RCBF and https://github.com/LiqunZhao/A-Barrier-Lyapunov-Actor-Critic-Reinforcement-Learning-Approach-for-Safe-and-Stable-Control
 
 This repository only contains the code with clear comments for the algorithms ***Neural ordinary differential equations-based Lyapunov Barrier Actor Critic (NLBAC)***, 
 for other algorithms, please refer to:
