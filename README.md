@@ -90,8 +90,10 @@ The whole process is similar:
 7. Run the file `Your_customized_environment_modelling.py` (You can change the names of the data collected and pre-trained model, the path where the pre-trained model is saved, and some parameters like the input and output dimensions and the amount of data collected for pre-training. Make sure that they align with each other).
 8. Copy the new pre-trained model to `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf`
 9. Update the `neural_ode_model_pt` variable in `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf/sac_cbf_clf.py` with the correct path to the new pre-trained model that aligns with your computing environment
-10. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training`
-11. Run the command `python main.py --env Your_customized_environment --gamma_b 0.5 --max_episodes 200 --cuda --updates_per_step 2 --batch_size 256 --seed 0 --start_steps 200`. Change the arguments if necessary.
+10. Rewrite the functions `get_policy_loss_2` and `backup_get_policy_loss_2` in the file `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training/sac_cbf_clf/sac_cbf_clf.py` to formulate your own CBF and CLF constraints (read the paper for the method to construct these constraints, and usually need to pay attention to the relative degree of the CBF constraints)
+11. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/Your_customized_environment/Your_customized_environment_RL_training`
+12. Change some contents in the file `main.py` like when to use the backup control according to your customized environment
+13. Run the command `python main.py --env Your_customized_environment --gamma_b 0.5 --max_episodes 200 --cuda --updates_per_step 2 --batch_size 256 --seed 0 --start_steps 200`. Change the arguments if necessary.
 
 
 ## Others 
