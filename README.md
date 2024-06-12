@@ -14,8 +14,8 @@ for other algorithms, please refer to:
 ***CPO, PPO-Lagrangian and TRPO-Lagrangian***: https://github.com/openai/safety-starter-agents
 
 Three environments called `Unicycle`, `SimulatedCars (Simulated Car Following)` and `Planar Vertical Take-Off and Landing (PVTOL)` are provided in this repository. In `Unicycle`, a unicycle is required to arrive at the
-desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars (Simulated Car Following)` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the 4th car to keep
-a desired distance from the 3rd car while avoiding collisions with other cars. In `Planar Vertical Take-Off and Landing (PVTOL)`, a quadcopter is required to reach a destination while avoiding obstacles, keeping within a specified range along the Y-axis and within a specific distance from a safety pilot along the X-axis.
+desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars (Simulated Car Following)` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the $4^{th}$ car to keep
+a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. In `Planar Vertical Take-Off and Landing (PVTOL)`, a quadcopter is required to reach a destination while avoiding obstacles, keeping within a specified range along the Y-axis and within a specific distance from a safety pilot along the X-axis.
 
 ***Detailed descriptions of the three environments can be found in the last part of this page.***
 
@@ -113,16 +113,31 @@ Here we present comparisons of modeling performance between Neural ODEs, which m
 
 ## Detailed Experiment Setup
 **Unicycle:** In this experiment setup, a unicycle is tasked with reaching the designated location, i.e., the destination, while avoiding collisions with obstacles. The real dynamics of the system is: 
-$$ 
+
+```math
 \dot{x}_{t_k}= 
 \begin{bmatrix} 
 \cos (\theta_{t_k}) & 0 \\ 
 \sin (\theta_{t_k}) & 0 \\ 
 0 & 1.0 
 \end{bmatrix} (u_{t_k} + u_{d, t_k}). 
-$$ Here, $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}]^T$ is the state where $x_{1t_k}$ and $x_{2t_k}$ represent the X-coordinate and Y-coordinate of the unicycle and $\theta_{t_k}$ is the orientation at the timestep $t_k$. The control signal $u_{t_k} = [v_{t_k}, \omega_{t_k}]^T$ comprises linear velocity $v_{t_k}$ and angular velocity $\omega_{t_k}$. The time interval used in this experiment is $0.02$ s. $u_{d, t_k} = -0.1[\cos(\theta_{t_k}), 0]^T$. As to NODE-based models, the input of network $\hat{f}$ is the state with the dimension of 3, and the output dimension is 3; the input of network $\hat{g}$ is the state with the dimension of 3, and the output dimension is 6 (which is then resized as $[3, 2]$). Then, a point at a distance $l_p$ ahead of the unicycle is considered to establish safety constraints for collision-free navigation, and the function $p: \mathbb{R}^3 \rightarrow \mathbb{R}^2$ is defined as: $$ p(x_{t_k})= \begin{bmatrix} x_{1t_k} \\ x_{2t_k} \end{bmatrix} + l_p \begin{bmatrix} \cos (\theta_{t_k}) \\ \sin (\theta_{t_k}) \end{bmatrix}. $$   
+```
+
+Here, $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}]^T$ is the state where $x_{1t_k}$ and $x_{2t_k}$ represent the X-coordinate and Y-coordinate of the unicycle and $\theta_{t_k}$ is the orientation at the timestep $t_k$. The control signal $u_{t_k} = [v_{t_k}, \omega_{t_k}]^T$ comprises linear velocity $v_{t_k}$ and angular velocity $\omega_{t_k}$. The time interval used in this experiment is $0.02$ s. $u_{d, t_k} = -0.1[\cos(\theta_{t_k}), 0]^T$. As to NODE-based models, the input of network $\hat{f}$ is the state with the dimension of 3, and the output dimension is 3; the input of network $\hat{g}$ is the state with the dimension of 3, and the output dimension is 6 (which is then resized as $[3, 2]$). Then, a point at a distance $l_p$ ahead of the unicycle is considered to establish safety constraints for collision-free navigation, and the function $p: \mathbb{R}^3 \rightarrow \mathbb{R}^2$ is defined as: 
+
+```math
+p(x_{t_k})= 
+\begin{bmatrix} 
+x_{1t_k} \\ 
+x_{2t_k} 
+\end{bmatrix} + l_p 
+\begin{bmatrix} 
+\cos (\theta_{t_k}) \\ 
+\sin (\theta_{t_k}) 
+\end{bmatrix}.
+```
   
-&emsp;&emsp;The reward signal is formulated as $-K_1(v_t - v_s)^2 + K_2 \Delta d$, where $v_s$ represents the predefined velocity, $\Delta d$ denotes the reduction in the distance between the unicycle and the destination in two consecutive timesteps, and $K_1$ and $K_2$ are coefficients set to 0.1 and 30, respectively. An additional reward of 500 will be given if the unicycle reaches a small neighborhood of the destination. The cost signal is given by $\left\lVert p(x_{t_{k+1}}) - p(x_{\text{desired}}) \right\rVert$ where $p(x_{\text{desired}}) = [x_{\text{1desired}}, x_{\text{2desired}}]^T$ denotes the position of the desired location. Pre-defined CBFs, if provided, are $h_i(x_{t_k}) = \frac{1}{2} \big( (p(x_{t_k}) - p_{\text{obs}_i})^2 - \delta^2 \big)$ where $p_{\text{obs}_i}$ represents the position of the $i^{th}$ obstacle, and $\delta$ is the minimum required distance between the unicycle and obstacles. Hence, the relative degree is 1 and the planning horizon for NODEs predictions is 1. When no pre-defined CBFs are available, the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $d = 1$ and $D= -20$.   
+&emsp;&emsp;The reward signal is formulated as $-K_1(v_t - v_s)^2 + K_2 \Delta d$, where $v_s$ represents the predefined velocity, $\Delta d$ denotes the reduction in the distance between the unicycle and the destination in two consecutive timesteps, and $K_1$ and $K_2$ are coefficients set to 0.1 and 30, respectively. An additional reward of 500 will be given if the unicycle reaches a small neighborhood of the destination. The cost signal is given by $\left\lVert p(x_{t_{k+1}}) - p(x_{\text{desired}}) \right\rVert$ where $p(x_{\text{desired}}) = [x_{\text{1desired}}, x_{\text{2desired}}]^T$ denotes the position of the desired location. Pre-defined CBFs, if provided, are $`h_i(x_{t_k}) = \frac{1}{2} \big( (p(x_{t_k}) - p_{\text{obs}_i})^2 - \delta^2 \big)`$ where $p_{\text{obs}_i}$ represents the position of the $i^{th}$ obstacle, and $\delta$ is the minimum required distance between the unicycle and obstacles. Hence, the relative degree is 1 and the planning horizon for NODEs predictions is 1. When no pre-defined CBFs are available, the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $d = 1$ and $D= -20$.   
   
 &emsp;&emsp;If the stability constraint is violated due to the inability to satisfy safety and stability constraints simultaneously, the unicycle can become trapped close to obstacles. In such cases, the backup controller takes over from the primary controller. The primary controller is reinstated when the unicycle moves a long distance away from the trapped position, or when the predefined time threshold for using the backup controller is exceeded.  
 <p align="center">
@@ -131,13 +146,42 @@ $$ Here, $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}]^T$ is the state where $x_
   <b>Unicycle Environment</b>
 </p>  
 
-**Simulated Car Following:** This environment simulates a chain of five cars following each other on a straight road. The objective is to control the acceleration of the $4^{th}$ car to maintain a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. The real dynamics of all cars except the $4^{th}$ one is given by: $$ \begin{array}{l} \dot{x}_{t_{k},i}= \left[ \begin{array}{c} v_{t_{k},i} \\ 0 \end{array} \right ] + \left[ \begin{array}{c} 0 \\ 1+d_i \end{array} \right ] a_{t_{k},i} \qquad \forall i \in \{1,2,3,5\}. \end{array} $$ Each state of the system is denoted as $x_{t_{k},i} = [p_{t_{k},i},v_{t_{k},i}]^T$, indicating the position $p_{t_{k},i}$ and velocity $v_{t_{k},i}$ of the $i^{th}$ car at the timestep $t_{k}$, $d_i=0.1$. The time interval used in this experiment is $0.02$s. The predefined velocity of the $1^{st}$ car is $v_{s} - 4\sin (t_{k})$, where $v_{s}=3.0$. Its acceleration is given as $a_{t_{k},1}=k_v(v_{s} - 4\sin (t_{k}) -v_{t_{k},1})$ where $k_v=4.0$. Accelerations of Car 2 and 3 are given by: $$ a_{t_{k},i}\!=\!\left\{ \begin{aligned} &\!k_v(v_{s}\!-\!v_{t_{k},i})\!-\!k_b(p_{t_{k},i\!-\!1}\!-\!p_{t_{k},i})\,\,\text{if}\,|p_{t_{k},i\!-\!1}\!-\!p_{t_{k},i}|\! <\! 6.5\\ &\!k_v(v_{s}\!-\!v_{t_{k},i})\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\text{otherwise}, \\ \end{aligned} \right. $$ where $k_b=20.0$ and $i=2,3$. The acceleration of the $5^{th}$ car is: $$ a_{t_{k},5}\!=\!\left\{ \begin{aligned} &\!k_v(v_{s}\!-\!v_{t_{k},5})\!-\!k_b(p_{t_{k},3}\!-\!p_{t_{k},5})\,\,if\,|p_{t_{k},3}-p_{t_{k},5}| \!<\! 13.0\\ &\!k_v(v_{s}\!-\!v_{t_{k},5})\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,otherwise. \\ \end{aligned} \right. $$ The model of the $4^{th}$ car is as follows: $$ \dot{x}_{t_k,4}= \left[ \begin{array}{c} v_{t_{k},4} \\ 0 \end{array} \right ] + \left[ \begin{array}{c} 0 \\ 1.0 \end{array} \right ] u_{t_{k}} , $$ where $u_{t_{k}}$ is the acceleration of the $4^{th}$ car, and also the control signal generated by the controller at the timestep $t_{k}$.   
+**Simulated Car Following:** This environment simulates a chain of five cars following each other on a straight road. The objective is to control the acceleration of the $4^{th}$ car to maintain a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. The real dynamics of all cars except the $4^{th}$ one is given by: 
+
+```math 
+\begin{array}{l} \dot{x}_{t_{k},i}= \left[ \begin{array}{c} v_{t_{k},i} \\ 0 \end{array} \right ] + \left[ \begin{array}{c} 0 \\ 1+d_i \end{array} \right ] a_{t_{k},i} \qquad \forall i \in \{1,2,3,5\}. \end{array} 
+``` 
+
+Each state of the system is denoted as $x_{t_{k},i} = [p_{t_{k},i},v_{t_{k},i}]^T$, indicating the position $p_{t_{k},i}$ and velocity $v_{t_{k},i}$ of the $i^{th}$ car at the timestep $t_{k}$, $d_i=0.1$. The time interval used in this experiment is $`0.02s`$. The predefined velocity of the $1^{st}$ car is $v_{s} - 4\sin (t_{k})$, where $v_{s}=3.0$. Its acceleration is given as $a_{t_{k},1}=k_v(v_{s} - 4\sin (t_{k}) -v_{t_{k},1})$ where $k_v=4.0$. Accelerations of Car 2 and 3 are given by: 
+
+```math 
+a_{t_{k},i}\!=\!\left\{ \begin{aligned} &\!k_v(v_{s}\!-\!v_{t_{k},i})\!-\!k_b(p_{t_{k},i\!-\!1}\!-\!p_{t_{k},i})\,\,\text{if}\,|p_{t_{k},i\!-\!1}\!-\!p_{t_{k},i}|\! <\! 6.5\\ &\!k_v(v_{s}\!-\!v_{t_{k},i})\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\text{otherwise}, \\ \end{aligned} \right. 
+```
+
+where $k_b=20.0$ and $i=2,3$. The acceleration of the $5^{th}$ car is: 
+
+```math  
+a_{t_{k},5}\!=\!\left\{ \begin{aligned} &\!k_v(v_{s}\!-\!v_{t_{k},5})\!-\!k_b(p_{t_{k},3}\!-\!p_{t_{k},5})\,\,if\,|p_{t_{k},3}-p_{t_{k},5}| \!<\! 13.0\\ &\!k_v(v_{s}\!-\!v_{t_{k},5})\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,otherwise. \\ \end{aligned} \right. 
+``` 
+
+The model of the $4^{th}$ car is as follows: 
+```math
+\dot{x}_{t_k,4}= \left[ \begin{array}{c} v_{t_{k},4} \\ 0 \end{array} \right ] + \left[ \begin{array}{c} 0 \\ 1.0 \end{array} \right ] u_{t_{k}} , 
+``` 
+
+where $u_{t_{k}}$ is the acceleration of the $4^{th}$ car, and also the control signal generated by the controller at the timestep $t_{k}$.   
   
 &emsp;&emsp;The reward signal is defined to minimize the overall control effort, and an additional reward of 2.0 is granted during timesteps when $d_{t_k} = p_{t_k,3}-p_{t_k,4}$, which is the distance between the $3^{rd}$ and $4^{th}$ car, falls within $[9.0,10.0]$. This range is defined as the desired region for $d_{t_k}$. Thus, the cost signal is determined as $\left\lVert d_{t_{k+1}} - d_{\text{desired}} \right\rVert$, where $d_{\text{desired}}=9.5$. Pre-defined CBFs are defined as $h_1(x_{t_k}) = p_{t_{k},3} - p_{t_{k},4} - \delta$ and $h_2(x_{t_k}) = p_{t_{k},4} - p_{t_{k},5} - \delta$, with $\delta$ being the minimum required distance between the cars. Hence, the relative degree is 2 and the planning horizon for making predictions using NODE is 2. 
 
-&emsp;&emsp;Note that when we use NODEs to model this system, we assume that we do not have the priori information that this system is control-affine which means model \eqref{node} is used here. The input of network $\mathcal{F}$ is $\left(t_k, \hat{x}_{t_k}, u_{t_k}\right)$ with the dimension of 12, and the output dimension is 10. When a safety constraint is violated if two types of constraints cannot be satisfied simultaneously, the $4^{th}$ car might be in close proximity to the $5^{th}$ car in order to make $d_{t_k}$ be within $[9.0,10.0]$. In such cases, the backup controller is activated. The primary controller is reactivated when the $4^{th}$ car moves beyond the dangerous area, namely out of the vicinity of the $5^{th}$ car, or when the predetermined time threshold for utilizing the backup controller is exceeded.  
+&emsp;&emsp;Note that when we use NODEs to model this system, we assume that we do not have the priori information that this system is control-affine. The input of network $`\mathcal{F}`$ is $`\left(t_k, \hat{x}_{t_k}, u_{t_k}\right)`$ with the dimension of 12, and the output dimension is 10. When a safety constraint is violated if two types of constraints cannot be satisfied simultaneously, the $4^{th}$ car might be in close proximity to the $5^{th}$ car in order to make $d_{t_k}$ be within $[9.0,10.0]$. In such cases, the backup controller is activated. The primary controller is reactivated when the $4^{th}$ car moves beyond the dangerous area, namely out of the vicinity of the $5^{th}$ car, or when the predetermined time threshold for utilizing the backup controller is exceeded.  
   
-**Planar Vertical Take-Off and Landing (PVTOL):** In this experiment, a quadcopter is required to reach a destination while avoiding obstacles and keeping within a specified range along the Y-axis and a specific distance from a safety pilot along the X-axis. The real dynamics of the system is: $$ \begin{array}{l} \dot{x}_{t_{k}}= \left[ \begin{array}{c} v_{1{t_k}} \\ v_{2{t_k}}\\ 0\\ - \sin (\theta_{t_k}) \times f_{t_k}\\ \cos (\theta_{t_k}) \times f_{t_k} -1.0\\ 0 \end{array} \right ] + \left[ \begin{array}{cc} 0 & 0\\ 0 & 0\\ 0 & 1\\ 0 & 0\\ 0 & 0\\ 1 & 0 \end{array} \right ] u_{t_{k}} . \end{array} $$ Here $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}, v_{1{t_k}}, v_{2{t_k}}, f_{t_k}]^T$ is the state where $x_{1t_k}$ and $x_{2t_k}$ represent the X-coordinate and Y-coordinate of the quadcopter and $\theta_{t_k}$ is the orientation at the timestep $t_k$. $v_{1{t_k}}$ and $v_{2{t_k}}$ are velocities along X and Y axis, and $f_{t_k}$ is the thrust. The control signal $u_{t_k} = [u_{ft_k}, \omega_{t_k}]^T$ includes the derivative of the thrust and angular velocity. The time interval used in this experiment is $0.02$ s.   
+**Planar Vertical Take-Off and Landing (PVTOL):** In this experiment, a quadcopter is required to reach a destination while avoiding obstacles and keeping within a specified range along the Y-axis and a specific distance from a safety pilot along the X-axis. The real dynamics of the system is: 
+
+```math
+\begin{array}{l} \dot{x}_{t_{k}}= \left[ \begin{array}{c} v_{1{t_k}} \\ v_{2{t_k}}\\ 0\\ - \sin (\theta_{t_k}) \times f_{t_k}\\ \cos (\theta_{t_k}) \times f_{t_k} -1.0\\ 0 \end{array} \right ] + \left[ \begin{array}{cc} 0 & 0\\ 0 & 0\\ 0 & 1\\ 0 & 0\\ 0 & 0\\ 1 & 0 \end{array} \right ] u_{t_{k}} . \end{array} 
+``` 
+
+Here $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}, v_{1{t_k}}, v_{2{t_k}}, f_{t_k}]^T$ is the state where $x_{1t_k}$ and $x_{2t_k}$ represent the X-coordinate and Y-coordinate of the quadcopter and $\theta_{t_k}$ is the orientation at the timestep $t_k$. $v_{1{t_k}}$ and $v_{2{t_k}}$ are velocities along X and Y axis, and $f_{t_k}$ is the thrust. The control signal $u_{t_k} = [u_{ft_k}, \omega_{t_k}]^T$ includes the derivative of the thrust and angular velocity. The time interval used in this experiment is $0.02$ s.   
   
 &emsp;&emsp;The reward signal is defined to minimize the distance from the destination, and an additional reward of 1500 will be given if the quadcopter reaches a small neighborhood of the destination. The cost signal is the current distance from the destination, and the safety pilot tracks the quadcopter via a proportional controller along the X-axis. Collision avoidance and confinement within specific ranges along the X-axis and Y-axis are ensured by pre-defined CBFs, following a similar approach to the previous two environments, if given. The relative degree, and therefore the planning horizon for NODEs predictions, is 3. When no pre-defined CBFs are available,  the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $d = 0.1$ and $D= -0.1$.  
   
