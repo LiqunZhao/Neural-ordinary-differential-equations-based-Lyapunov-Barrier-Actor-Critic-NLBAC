@@ -96,7 +96,7 @@ Here we present comparisons of modeling performance between Neural ODEs, which m
 
  **Unicycle:** In this environment, with the prior knowledge that the system is control-affine, we utilize two separate networks to represent $\hat{f}$ and $\hat{g}$, respectively, to model the dynamics through Neural ODEs. For the common neural network baseline, we employ a multilayer perceptron (MLP) with 5 hidden layers, each with a hidden dimension of 100, to predict the next states given the current states and actions. The test result is depicted below, where the mean squared error of the NODEs-based model, computed using the PyTorch `nn.MSELoss` function, is 0.0029, and the mean squared error of the common NN-based model computed in the same way is 2.5176. 
 <p align="center">
-  <img src="pic/Comparison_NODE_NN_unicycle.png" width="400" />
+  <img src="pic/NN(1.1023)_NODE(0.0012)_compare_modify.png" width="400" />
 </p>
 
 **Simulated Car Following:** In this environment, lacking the prior knowledge about whether the system is control-affine or not, we directly use a single network to represent $\mathcal{F}$ to model the dynamics through Neural ODEs. For the common neural network baseline, we employ an MLP with 4 hidden layers, each with a hidden dimension of 64, to predict the next states. The test result is illustrated below, where the mean squared error of the NODEs-based model, computed using the PyTorch `nn.MSELoss` function, is 0.3682, and the mean squared error of the common NN-based model computed in the same way is 1.5534. 
