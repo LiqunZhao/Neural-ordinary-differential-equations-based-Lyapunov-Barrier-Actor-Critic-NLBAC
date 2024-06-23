@@ -17,7 +17,7 @@ Three environments called `Unicycle`, `SimulatedCars (Simulated Car Following)` 
 desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars (Simulated Car Following)` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the $4^{th}$ car to keep
 a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. In `Planar Vertical Take-Off and Landing (PVTOL)`, a quadcopter is required to reach a destination while avoiding obstacles, keeping within a specified range along the Y-axis and within a specific distance from a safety pilot along the X-axis.
 
-***Detailed descriptions of the three environments can be found in the last part of this page.***
+***Detailed descriptions of the three environments can be found in the last part of this page, with comparisons of modeling performance between neural ODEs and conventional neural network.***
 
 ***Interested readers can also explore the option of using their own customized environments. Detailed instructions can be found below***.
 
@@ -92,7 +92,7 @@ The whole process is similar:
 10. Run the command `python main.py --env Your_customized_environment --gamma_b 0.5 --max_episodes 200 --cuda --updates_per_step 2 --batch_size 256 --seed 0 --start_steps 200`. Change the arguments if necessary.
 
 ## Comparisons of Modeling Performance between Neural ODEs and Conventional Neural Network
-Here we present comparisons of modeling performance between Neural ODEs, which model system dynamics, and a common neural network baseline that directly outputs the predicted next state.
+Here we present comparisons of modeling performance between Neural ODEs, which model system dynamics, and a common neural network baseline (labeled as "Standard NN") that directly outputs the predicted next state. The ground truth is the output of the gym environment and is labeled as "gym".
 
  **Unicycle:** In this environment, with the prior knowledge that the system is control-affine, we utilize two separate networks to represent $\hat{f}$ and $\hat{g}$, respectively, to model the dynamics through Neural ODEs. The test result is depicted below, where the mean squared error of the NODEs-based model, computed using the PyTorch `nn.MSELoss` function, is 0.0012, and the mean squared error of the common NN-based model computed in the same way is 1.1023. 
 <p align="center">
