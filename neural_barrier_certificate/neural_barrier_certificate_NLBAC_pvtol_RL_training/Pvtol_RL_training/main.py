@@ -224,7 +224,7 @@ if __name__ == "__main__":
     parser.add_argument('--validate_episodes', default=5, type=int, help='how many episode to perform during validate experiment')
     parser.add_argument('--validate_steps', default=1000, type=int, help='how many steps to perform a validate experiment')
     # Dynamics, Env Args
-    parser.add_argument('--gamma_b', default=0.6, type=float,help='coefficient used when constructing CBF constraints')
+    parser.add_argument('--gamma_b', default=1.0, type=float,help='coefficient used when constructing CBF constraints')
     parser.add_argument('--l_p', default=0.03, type=float,
                         help="Look-ahead distance for unicycle dynamics output.")
     args = parser.parse_args()

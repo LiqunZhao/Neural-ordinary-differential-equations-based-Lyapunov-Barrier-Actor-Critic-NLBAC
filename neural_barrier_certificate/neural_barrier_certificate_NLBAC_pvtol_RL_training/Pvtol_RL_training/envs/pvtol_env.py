@@ -25,7 +25,7 @@ class PvtolEnv(gym.Env):
         np.random.seed(seed)
 
         # barrier signal to train the neural barrier certificate, treated as hyperparameters and therefore can be tuned for the learning process
-        self.little_b = 0.1
+        self.little_b = 0.0
         self.capital_b = -0.1
 
         self.get_f, self.get_g = self._get_dynamics()

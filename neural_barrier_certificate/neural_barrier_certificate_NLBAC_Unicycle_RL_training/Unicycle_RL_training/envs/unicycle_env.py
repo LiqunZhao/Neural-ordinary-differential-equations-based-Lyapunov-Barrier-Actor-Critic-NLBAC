@@ -48,8 +48,8 @@ class UnicycleEnv(gym.Env):
         self.safety_cost_coef = 1.0
 
         # barrier signal to train the neural barrier certificate, treated as hyperparameters and therefore can be tuned for the learning process
-        self.little_b = 1.0
-        self.capital_b = -20
+        self.little_b = 0.0
+        self.capital_b = -20.0
 
         # Viewer
         self.viewer = None

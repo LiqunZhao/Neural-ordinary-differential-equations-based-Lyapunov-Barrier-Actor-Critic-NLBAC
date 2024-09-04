@@ -1,6 +1,6 @@
 # Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC
 
-Repository containing the code for the paper "NLBAC: A Neural ODE-based Algorithm for State-Wise Stable and Safe Reinforcement Learning through Augmented Lagrangian Method", and this code is developed based on codes: https://github.com/yemam3/Mod-RL-RCBF, and https://github.com/LiqunZhao/A-Barrier-Lyapunov-Actor-Critic-Reinforcement-Learning-Approach-for-Safe-and-Stable-Control for the paper [Stable and Safe Reinforcement Learning via a Barrier-Lyapunov Actor-Critic Approach](https://ieeexplore.ieee.org/abstract/document/10383742).
+Repository containing the code for the paper "NLBAC: A Neural ODE-based Algorithm for State-Wise Stable and Safe Reinforcement Learning", and this code is developed based on codes: https://github.com/yemam3/Mod-RL-RCBF, and https://github.com/LiqunZhao/A-Barrier-Lyapunov-Actor-Critic-Reinforcement-Learning-Approach-for-Safe-and-Stable-Control for the paper [Stable and Safe Reinforcement Learning via a Barrier-Lyapunov Actor-Critic Approach](https://ieeexplore.ieee.org/abstract/document/10383742).
 
 This repository only contains the code with clear comments for the algorithms ***Neural ordinary differential equations-based Lyapunov Barrier Actor Critic (NLBAC)***, 
 for other algorithms, please refer to:
@@ -13,11 +13,11 @@ for other algorithms, please refer to:
 
 ***CPO, PPO-Lagrangian and TRPO-Lagrangian***: https://github.com/openai/safety-starter-agents
 
-Three environments called `Unicycle`, `SimulatedCars (Simulated Car Following)` and `Planar Vertical Take-Off and Landing (PVTOL)` are provided in this repository. In `Unicycle`, a unicycle is required to arrive at the
-desired location, i.e., destination, while avoiding collisions with obstacles. `SimulatedCars (Simulated Car Following)` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the $4^{th}$ car to keep
-a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. In `Planar Vertical Take-Off and Landing (PVTOL)`, a quadcopter is required to reach a destination while avoiding obstacles, keeping within a specified range along the Y-axis and within a specific distance from a safety pilot along the X-axis.
+Four environments called `Unicycle`, `Car Following`, `Planar Vertical Take-Off and Landing (PVTOL)` and `Quadrotor` are provided in this repository. In `Unicycle`, a unicycle is required to arrive at the
+desired location, i.e., destination, while avoiding collisions with obstacles. `Car Following` involves a chain of five cars following each other on a straight road. The goal is to control the acceleration of the $4^{th}$ car to keep
+a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. In `Planar Vertical Take-Off and Landing (PVTOL)`, a quadcopter is required to reach a destination while avoiding obstacles, keeping within a specified range along the Y-axis and within a specific distance from a safety pilot along the X-axis. In `Quadrotor`, a physics-engine-based quadrotor is required  to approach towards and finally arrive at a desired destination, while keeping both the vertical and horizontal positions within a pre-defined range, and avoiding the collision with an obstacle.
 
-***Detailed descriptions of the three environments can be found in the last part of this page, with comparisons of modeling performance between neural ODEs and conventional neural network.***
+***Detailed descriptions of the environments can be found in the last part of this page, with comparisons of modeling performance between neural ODEs and conventional neural network.***
 
 ***Interested readers can also explore the option of using their own customized environments. Detailed instructions can be found below***.
 
@@ -34,44 +34,43 @@ torchdiffeq 0.2.3
 ```
 
 ## Running the Experiments
-Firstly, instructions on how to run the codes for the `Unicycle`, `SimulatedCars (Simulated Car Following)` and `Planar Vertical Take-Off and Landing (PVTOL)` environments are provided. Following that, instruction on applying this NLBAC framework to your customized environment is  provided. 
+Firstly, instructions on how to run the codes for the `Unicycle`, `Car Following` and `Planar Vertical Take-Off and Landing (PVTOL)` environments are provided. Following that, instruction on applying this NLBAC framework to your customized environment is  provided. 
 
 ### `Unicycle` Env: 
-You can follow the steps below to run the RL-training part directly since a pre-trained model has been provided:
+#### 1. When pre-defined CBFs are used:
+You can follow the steps below to run the RL-training part directly:
 1. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/NLBAC_Unicycle_RL_training/Unicycle_RL_training`
 2. Run the command `python main.py --env Unicycle --gamma_b 50 --max_episodes 200  --cuda --updates_per_step 2 --batch_size 128 --seed 0  --start_steps 1000`
 
-Here are the results obtained by my machine:
-<p align="center">
-  <img src="pic/unicycle_Cumulative_Reward_Per_Episode.png" width="400" />
-  <img src="pic/unicycle_Cumulative_Safety_Cost_Per_Episode.png" width="400" /> 
-</p>
+#### 2. When a learned barrier certificate is used:
+You can follow the steps below to run the RL-training part directly:
+1. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/neural_barrier_certificate_NLBAC_Unicycle_RL_training/Unicycle_RL_training`
+2. Run the command `python main.py --env Unicycle --gamma_b 5 --max_episodes 200  --cuda --updates_per_step 2 --batch_size 128 --seed 0  --start_steps 1000`
 
-The experiment where neural barrier certificate is trained and used is within the folder `neural_barrier_certificate`.
-
-### `SimulatedCars (Simulated Car Following)` Env: 
-You can follow the steps below to run the RL-training part directly since a pre-trained model has been provided:
+### `Car Following` Env: 
+You can follow the steps below to run the RL-training part directly:
 1. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/NLBAC_SimulatedCarsFollowing_RL_training/Simulated_Car_Following_RL_training`
 2. Run the command `python main.py --env SimulatedCars --gamma_b 0.5 --max_episodes 200 --cuda --updates_per_step 2 --batch_size 256 --seed 0 --start_steps 200`
 
-Here are the results obtained by my machine:
-<p align="center">
-  <img src="pic/completed_simucars_Cumulative_Reward_Per_Episode.png" width="400" />
-  <img src="pic/simucars_Cumulative_Safety_Cost_Per_Episode.png" width="400" /> 
-</p>
-
 ### `Planar Vertical Take-Off and Landing (PVTOL)` Env: 
-You can follow the steps below to run the RL-training part directly since a pre-trained model has been provided:
+#### 1. When pre-defined CBFs are used:
+You can follow the steps below to run the RL-training part directly:
 1. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/NLBAC_pvtol_RL_training/Pvtol_RL_training`
 2. Run the command `python main.py --env Pvtol --gamma_b 0.8 --max_episodes 400 --cuda --updates_per_step 1 --batch_size 256 --seed 10 --start_steps 1000`
 
-Here are the results obtained by my machine:
-<p align="center">
-  <img src="pic/pvtol_Cumulative_Reward_Per_Episode.png" width="400" />
-  <img src="pic/completed_pvtol_Cumulative_Safety_Cost_Per_Episode.png" width="400" /> 
-</p>
+#### 2. When a learned barrier certificate is used:
+You can follow the steps below to run the RL-training part directly:
+1. Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/neural_barrier_certificate_NLBAC_pvtol_RL_training/Pvtol_RL_training`
+2. Run the command `python main.py --env Pvtol --gamma_b 1 --max_episodes 210 --cuda --updates_per_step 1 --batch_size 256 --seed 0 --start_steps 1000`
 
-The experiment where neural barrier certificate is trained and used is within the folder `neural_barrier_certificate`.
+### `Quadrotor` Env: 
+1. Please install the modified `safe-control-gym` by:\
+   (1) Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/safe-control-gym`\
+   (2) Run `python -m pip install -e .`\
+2. You can follow the steps below to run the RL-training part directly:\
+   (1) Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/safe-control-gym/examples/rl`\
+   (2) Run the file `train_rl_model.sh` after changing parameters like the random seed.
+
 ### Adding new environments and running custom experiments: 
 
 The whole process is similar: 
@@ -80,6 +79,7 @@ The whole process is similar:
 2. Prepare you own customized environment and do some adjustments. Here is one point:
 - Outputs of your own customized `env.step` function. Besides `next obs`, `reward`, `done` and `info` that are commonly used in RL literature, here we still need:
   - `constraint`: Difference between the current state and the desired state, and is required to decrease. It is also used to approximate the Lyapunov network.
+  - `barrier signal`: Signal necessary for training the barrier certificate when pre-defined CBFs are not available.
   - Some lists used as inputs of the Lyapunov network (if `obs` and `next obs` are not used as inputs of the Lyapunov network directly). See the aforementioned environments as examples.
   - Other info like the number of safety violations and value of safety cost (usually used in algorithms like CPO, PPO-Lagrangian and TRPO-Lagrangian), and barrier signal if a neural barrier certificate needs to be learned.
 3. Add the new customized environment in the file `build_env.py`, and change some `if` statements regarding `dynamics_mode` in `sac_cbf_clf.py`
@@ -99,7 +99,7 @@ Here we present comparisons of modeling performance between Neural ODEs, which m
   <img src="pic/NN(1.1023)_NODE(0.0012)_compare_modify.png" width="400" />
 </p>
 
-**Simulated Car Following:** In this environment, lacking the prior knowledge about whether the system is control-affine or not, we directly use a single network to represent $\mathcal{F}$ to model the dynamics through Neural ODEs. The test result is illustrated below, where the mean squared error of the NODEs-based model, computed using the PyTorch `nn.MSELoss` function, is 0.3682, and the mean squared error of the common NN-based model computed in the same way is 1.5534. 
+**Car Following:** In this environment, lacking the prior knowledge about whether the system is control-affine or not, we directly use a single network to represent $\mathcal{F}$ to model the dynamics through Neural ODEs. The test result is illustrated below, where the mean squared error of the NODEs-based model, computed using the PyTorch `nn.MSELoss` function, is 0.3682, and the mean squared error of the common NN-based model computed in the same way is 1.5534. 
 <p align="center">
   <img src="pic/Comparison_NODE_NN_simulatedcars.png" width="400" />
 </p>
@@ -137,7 +137,7 @@ x_{2t_k}
 \end{bmatrix}.
 ```
   
-&emsp;&emsp;The reward signal is formulated as $-K_1(v_t - v_s)^2 + K_2 \Delta d$, where $v_s$ represents the predefined velocity, $\Delta d$ denotes the reduction in the distance between the unicycle and the destination in two consecutive timesteps, and $K_1$ and $K_2$ are coefficients set to 0.1 and 30, respectively. An additional reward of 500 will be given if the unicycle reaches a small neighborhood of the destination. The cost signal is given by $\left\lVert p(x_{t_{k+1}}) - p(x_{\text{desired}}) \right\rVert$ where $p(x_{\text{desired}}) = [x_{\text{1desired}}, x_{\text{2desired}}]^T$ denotes the position of the desired location. Pre-defined CBFs, if provided, are $`h_i(x_{t_k}) = \frac{1}{2} \big( (p(x_{t_k}) - p_{\text{obs}_i})^2 - \delta^2 \big)`$ where $p_{\text{obs}_i}$ represents the position of the $i^{th}$ obstacle, and $\delta$ is the minimum required distance between the unicycle and obstacles. Hence, the relative degree is 1 and the planning horizon for NODEs predictions is 1. When no pre-defined CBFs are available, the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $d = 1$ and $D= -20$.   
+&emsp;&emsp;The reward signal is formulated as $-K_1(v_t - v_s)^2 + K_2 \Delta d$, where $v_s$ represents the predefined velocity, $\Delta d$ denotes the reduction in the distance between the unicycle and the destination in two consecutive timesteps, and $K_1$ and $K_2$ are coefficients set to 0.1 and 30, respectively. An additional reward of 500 will be given if the unicycle reaches a small neighborhood of the destination. The cost signal is given by $\left\lVert p(x_{t_{k+1}}) - p(x_{\text{desired}}) \right\rVert$ where $p(x_{\text{desired}}) = [x_{\text{1desired}}, x_{\text{2desired}}]^T$ denotes the position of the desired location. Pre-defined CBFs, if provided, are $`h_i(x_{t_k}) = \frac{1}{2} \big( (p(x_{t_k}) - p_{\text{obs}_i})^2 - \delta^2 \big)`$ where $p_{\text{obs}_i}$ represents the position of the $i^{th}$ obstacle, and $\delta$ is the minimum required distance between the unicycle and obstacles. Hence, the relative degree is 1 and the planning horizon for NODEs predictions is 1. When no pre-defined CBFs are available, the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $D= -20$.   
   
 &emsp;&emsp;If the stability constraint is violated due to the inability to satisfy safety and stability constraints simultaneously, the unicycle can become trapped close to obstacles. In such cases, the backup controller takes over from the primary controller. The primary controller is reinstated when the unicycle moves a long distance away from the trapped position, or when the predefined time threshold for using the backup controller is exceeded.  
 <p align="center">
@@ -146,7 +146,7 @@ x_{2t_k}
   <b>Unicycle Environment</b>
 </p>  
 
-**Simulated Car Following:** This environment simulates a chain of five cars following each other on a straight road. The objective is to control the acceleration of the $4^{th}$ car to maintain a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. The real dynamics of all cars except the $4^{th}$ one is given by: 
+**Car Following:** This environment simulates a chain of five cars following each other on a straight road. The objective is to control the acceleration of the $4^{th}$ car to maintain a desired distance from the $3^{rd}$ car while avoiding collisions with other cars. The real dynamics of all cars except the $4^{th}$ one is given by: 
 
 ```math 
 \begin{array}{l} \dot{x}_{t_{k},i}= \left[ \begin{array}{c} v_{t_{k},i} \\ 0 \end{array} \right ] + \left[ \begin{array}{c} 0 \\ 1+d_i \end{array} \right ] a_{t_{k},i} \qquad \forall i \in \{1,2,3,5\}. \end{array} 
@@ -183,8 +183,19 @@ where $u_{t_{k}}$ is the acceleration of the $4^{th}$ car, and also the control 
 
 Here $x_{t_k} = [x_{1t_k}, x_{2t_k}, \theta_{t_k}, v_{1{t_k}}, v_{2{t_k}}, f_{t_k}]^T$ is the state where $x_{1t_k}$ and $x_{2t_k}$ represent the X-coordinate and Y-coordinate of the quadcopter and $\theta_{t_k}$ is the orientation at the timestep $t_k$. $v_{1{t_k}}$ and $v_{2{t_k}}$ are velocities along X and Y axis, and $f_{t_k}$ is the thrust. The control signal $u_{t_k} = [u_{ft_k}, \omega_{t_k}]^T$ includes the derivative of the thrust and angular velocity. The time interval used in this experiment is $0.02$ s.   
   
-&emsp;&emsp;The reward signal is defined to minimize the distance from the destination, and an additional reward of 1500 will be given if the quadcopter reaches a small neighborhood of the destination. The cost signal is the current distance from the destination, and the safety pilot tracks the quadcopter via a proportional controller along the X-axis. Collision avoidance and confinement within specific ranges along the X-axis and Y-axis are ensured by pre-defined CBFs, following a similar approach to the previous two environments, if given. The relative degree, and therefore the planning horizon for NODEs predictions, is 3. When no pre-defined CBFs are available,  the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $d = 0.1$ and $D= -0.1$.  
+&emsp;&emsp;The reward signal is defined to minimize the distance from the destination, and an additional reward of 1500 will be given if the quadcopter reaches a small neighborhood of the destination. The cost signal is the current distance from the destination, and the safety pilot tracks the quadcopter via a proportional controller along the X-axis. Collision avoidance and confinement within specific ranges along the X-axis and Y-axis are ensured by pre-defined CBFs, following a similar approach to the previous two environments, if given. The relative degree, and therefore the planning horizon for NODEs predictions, is 3. When no pre-defined CBFs are available,  the neural barrier certificate will be learned jointly with the controller by using additional barrier signals with $D= -0.1$.
   
  &emsp;&emsp;For NODE-based models, the input of network $\hat{f}$ is the state with the dimension of 6, and the output dimension is 6; the input of network $\hat{g}$ is the state with the dimension of 6, and the output dimension is 12 (which is then resized as $[6, 2]$). The conditions for activating the backup controller resemble those in the previous two tasks.
+
+**Quadrotor:** In this task, the 2D quadrotor needs to approach towards and finally arrive at a desired destination, while keeping both the vertical and horizontal positions within a pre-defined range, and avoiding the collision with an obstacle shown in the following figure. A more detailed description, including the state, action, and system dynamics, can be found in the paper [Safe-Control-Gym: A Unified Benchmark Suite for Safe Learning-Based Control and Reinforcement Learning in Robotics](https://ieeexplore.ieee.org/document/9849119). The reward signal is designed to minimize the distance between the current position and the goal position, which is also defined to be the cost signal. An additional reward of 250 is given when the quadrotor reaches the goal. In this task, no pre-defined CBFs are provided, and therefore, a neural barrier certificate will be learned jointly with the control policy. We define the barrier signal as $D_1=-1.0$ when the quadrotor's position is not within the pre-defined range, and $D_2 = -10.0$ when the quadrotor collides with the obstacle.
+
+&emsp;&emsp;For the NODE usd to model the system dynamics, we also assume that we do not have any priori information. Different from previous tasks, here states and actions are normalized before being used as the input of the NODE, and outputs of the NODE are denormalized before being used as predictions. Therefore, the input dimension of the NODE is 8, and the output dimension is 6.
+
+<p align="center">
+  <img src="pic/quadrotor.png" width="200" />
+<br>
+  <b>Quadrotor Environment</b>
+</p>  
+
 ## Others 
 If you have some questions regarding the code or the paper, please do not hesitate to contact me by email. My email address is `liqun.zhao@eng.ox.ac.uk`.
