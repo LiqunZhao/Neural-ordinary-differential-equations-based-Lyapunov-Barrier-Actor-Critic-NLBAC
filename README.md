@@ -66,7 +66,7 @@ You can follow the steps below to run the RL-training part directly:
 ### `Quadrotor` Env: 
 1. Please install the modified `safe-control-gym` by:\
    (1) Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/safe-control-gym`\
-   (2) Run `python -m pip install -e .`\
+   (2) Run `python -m pip install -e .`
 2. You can follow the steps below to run the RL-training part directly:\
    (1) Navigate to the directory `Neural-ordinary-differential-equations-based-Lyapunov-Barrier-Actor-Critic-NLBAC/neural_barrier_certificate/safe-control-gym/examples/rl`\
    (2) Run the file `train_rl_model.sh` after changing parameters like the random seed.
